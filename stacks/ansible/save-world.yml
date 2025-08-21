@@ -1,0 +1,19 @@
+- hosts: localhost
+  become: true #Access Privilege control for ansible
+  tasks:
+    #Save Files
+    - name: Check Save Files
+      shell:
+        cd /home/ec2-user/minecraft
+        cd /spacelift-world
+        ls -a
+    #Zip Files 
+    - name: Zip directory files
+      shell: |
+        cd /home/ec2-user/minecraft && zip -r world.zip spacelift-world || true
+    #Upload Files
+    - name: Upload Zip files
+      shell: |
+        aws s3 cp /home/ec2-user/minecraft/world.zip s3://{{ lookup('env', 'S3_BUCKET') }}/world.zip
+       
+
